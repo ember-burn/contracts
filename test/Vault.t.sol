@@ -7,9 +7,9 @@
 // contract VaultTest is Test {
 // 	VaultFactory public factory;
 // 	Vault public vault;
-	
+
 // 	function setUp() public {
-// 		factory = new VaultFactory(3 days, 50 days, address(this));	
+// 		factory = new VaultFactory(3 days, 50 days, address(this));
 // 	}
 
 // 	function testVaultCreation() public {
@@ -28,5 +28,4 @@
 // 		);
 // 	}
 
-	
 // }
