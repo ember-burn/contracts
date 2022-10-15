@@ -248,7 +248,10 @@ contract Vault is ERC20 {
     ///@notice Update the start time of the auction.
     ///@param _newStart New timestamp value.
     function updateStart(uint256 _newStart) external payable onlyAdmin {
-        require((auctionEnd - _newStart) <= maxAuctionLength && (auctionEnd - _newStart) >= minAuctionLength);
+        require(
+            (auctionEnd - _newStart) <= maxAuctionLength && 
+            (auctionEnd - _newStart) >= minAuctionLength
+        );
 
         assembly {
             let startSlot := auctionStart.slot
@@ -261,7 +264,10 @@ contract Vault is ERC20 {
     ///@notice Update the end time of the auction.
     ///@param _newEnd New timestamp value.
     function updateEnd(uint256 _newEnd) external onlyAdmin {
-        require((_newEnd - auctionStart) <= maxAuctionLength && (_newEnd - auctionStart) >= minAuctionLength);
+        require(
+            (_newEnd - auctionStart) <= maxAuctionLength && 
+            (_newEnd - auctionStart) >= minAuctionLength
+        );
 
         assembly {
             let endSlot := auctionEnd.slot
