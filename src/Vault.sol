@@ -160,7 +160,7 @@ contract Vault is ERC20 {
 
         emit Initialized(
             _feeBps, _auctionStart, _auctionEnd, _reservePrice, _supply, _admin, _tokenAddress, _tokenId, _symbol, _name
-            );
+        );
     }
 
     ///@notice Split a token into its constituent ERC20 fractions.
@@ -204,7 +204,29 @@ contract Vault is ERC20 {
         require(senderBalance > 0);
 
         _burn(msg.sender, senderBalance);
-        payable(msg.sender).transfer(currentBid / (100 / senderBalance));
+
+        // uint256 allocation = currentBid / (100 / senderBalance);
+        // uint256 fee = (allocation / 100) * (feeBps * 100);
+
+        uint256 allocation;
+        uint256 fee;
+
+        //TODO: Test this works.
+        assembly {
+            let alloc := allocation
+            let feeS := fee
+
+            let currBid := sload(currentBid.slot)
+            let bps := sload(feeBps.slot)
+
+            alloc := div(currBid, div(100, senderBalance))
+            feeS := mul(div(alloc, 100), mul(bps, 100))
+
+            allocation := alloc
+            fee := feeS
+        }
+
+        payable(msg.sender).transfer(allocation - fee);
 
         emit Claimed();
     }
@@ -243,6 +265,12 @@ contract Vault is ERC20 {
         }
 
         emit FeeUpdated(_newBps);
+    }
+
+    ///@notice Claim fees from the auction.
+    ///@dev THIS IS CURRENTLY A VULNERABLE FUNCTION.
+    function claimFee() external onlyAdmin {
+        payable(msg.sender).transfer(address(this).balance);
     }
 
     ///@notice Update the start time of the auction.
