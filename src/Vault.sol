@@ -211,19 +211,12 @@ contract Vault is ERC20 {
         uint256 allocation;
         uint256 fee;
 
-        //TODO: Test this works.
         assembly {
-            let alloc := allocation
-            let feeS := fee
+            let bidSlot := sload(currentBid.slot)
+            let feeSlot := sload(feeBps.slot)
 
-            let currBid := sload(currentBid.slot)
-            let bps := sload(feeBps.slot)
-
-            alloc := div(currBid, div(100, senderBalance))
-            feeS := mul(div(alloc, 100), mul(bps, 100))
-
-            allocation := alloc
-            fee := feeS
+            allocation:= div(bidSlot, div(100, senderBalance))
+            fee := mul(div(allocation, 100), mul(feeSlot, 100))
         }
 
         payable(msg.sender).transfer(allocation - fee);
