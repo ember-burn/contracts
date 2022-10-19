@@ -4,7 +4,6 @@ pragma solidity ^0.8.13;
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {ERC721} from "solmate/tokens/ERC721.sol";
 
-//TODO: AuctionOver modifier
 ///@title Vault
 ///@notice Core fractionalization primitive.
 ///@author Zach
@@ -67,9 +66,9 @@ contract Vault is ERC20 {
     ///@notice Emitted when all consistuent ERC20 tokens are redeemed and the ERC721 is reclaimed.
     event Redeemed();
     ///@notice Emitted when the auction is bid upon.
-    event Bid();
+    event Bid(address indexed bidder, uint256 amount);
     ///@notice Emitted when a share of the final auction price is claimed.
-    event Claimed();
+    event Claimed(address indexed receiver, uint256 allocation, uint256 fee);
     ///@notice Emitted when the highest bidder recieves the token in return.
     event Recieved();
     ///@notice Emitted when the reserve price is updated.
@@ -192,7 +191,7 @@ contract Vault is ERC20 {
         currentBid = msg.value;
         highestBidder = msg.sender;
 
-        emit Bid();
+        emit Bid(msg.sender, msg.value);
     }
 
     ///@notice Claim your share of Ether from the auction.
@@ -228,7 +227,7 @@ contract Vault is ERC20 {
 
         payable(msg.sender).transfer(allocation - fee);
 
-        emit Claimed();
+        emit Claimed(msg.sender, allocation, fee);
     }
 
     ///@notice Claim token from contract if auction is over and calling address is the highest bidder.
