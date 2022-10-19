@@ -185,6 +185,7 @@ contract Vault is ERC20 {
     function bid() external payable isAuctionActive {
         require(auctionActive);
         require(msg.value > reservePrice);
+        require(msg.value > currentBid);
 
         payable(highestBidder).transfer(currentBid);
 
