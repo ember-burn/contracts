@@ -215,7 +215,7 @@ contract Vault is ERC20 {
             let bidSlot := sload(currentBid.slot)
             let feeSlot := sload(feeBps.slot)
 
-            allocation:= div(bidSlot, div(100, senderBalance))
+            allocation := div(bidSlot, div(100, senderBalance))
             fee := mul(div(allocation, 100), mul(feeSlot, 100))
         }
 
